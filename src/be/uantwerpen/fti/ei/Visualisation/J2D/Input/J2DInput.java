@@ -59,9 +59,9 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
 
     @Override
     public void keyPressed(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_RIGHT || event.getKeyCode() == KeyEvent.VK_D) {
+        if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
             nextTowerRequested = true;
-        } else if (event.getKeyCode() == KeyEvent.VK_LEFT || event.getKeyCode() == KeyEvent.VK_A) {
+        } else if (event.getKeyCode() == KeyEvent.VK_LEFT) {
             previousTowerRequested = true;
         } else if (event.getKeyCode() == KeyEvent.VK_H) {
             repairRequested = true;

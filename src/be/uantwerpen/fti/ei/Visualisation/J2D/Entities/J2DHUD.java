@@ -32,6 +32,6 @@ public final class J2DHUD extends HUD implements Drawable {
 
         // Third line: controls
         graphics2D.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        graphics2D.drawString("Click green spots to build.  Arrows/A-D change tower.  H/R repairs base(500 GOLD).", 25, 90);
+        graphics2D.drawString("Click green spots to build.  Arrows change tower.  H repairs base( 500 GOLD).", 25, 90);
     }
 }

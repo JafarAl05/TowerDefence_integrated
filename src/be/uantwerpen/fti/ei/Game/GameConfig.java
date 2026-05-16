@@ -62,7 +62,7 @@ public final class GameConfig {
     }
 
     public String getLuaScriptPath() {
-        return properties.getProperty("script.path", "scripts/waves.lua");
+        return properties.getProperty("script.path", "scripts/speed.lua");
     }
 
     private int getInt(String key, int fallback) {
