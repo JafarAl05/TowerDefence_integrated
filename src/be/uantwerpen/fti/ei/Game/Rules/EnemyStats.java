@@ -2,8 +2,7 @@ package be.uantwerpen.fti.ei.Game.Rules;
 
 /**
  * Pure game-rule data for enemies.
- *
- * <p>The Java2D factory only creates drawable enemy objects; it does not decide
+ * The Java2D factory only creates drawable enemy objects; it does not decide
  * these gameplay values. That keeps the abstract factory clean.</p>
  */
 public final class EnemyStats {

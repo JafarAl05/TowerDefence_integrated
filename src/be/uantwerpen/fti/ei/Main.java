@@ -28,7 +28,7 @@ public  class Main {
             panel.addMouseListener((java.awt.event.MouseListener) input);
             panel.setPreferredSize(new Dimension(config.getWindowWidth(), config.getWindowHeight()));
 
-            JFrame frame = new JFrame("Tower Defence - Clean Architecture Edition");
+            JFrame frame = new JFrame("Tower Defence");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setResizable(false);
             frame.add(panel);

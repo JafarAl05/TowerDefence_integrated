@@ -13,10 +13,10 @@ import be.uantwerpen.fti.ei.Game.Rules.TowerType;
 import java.util.List;
 
 /**
- * Abstract factory boundary between the game logic and a concrete presentation.
+ * Abstract factory boundary between the game logic and a concrete visualization
  *
  * <p>The Game package only depends on this abstract type and on logic-level entity
- * types. It never imports Swing, AWT, Java2D, images, or keyboard event classes.
+ * types. It never imports Java2D, images, or keyboard event classes.
  * A visual package, such as Visualisation.J2D, provides a concrete factory that
  * returns drawable subclasses of these logic entities.</p>
  *
