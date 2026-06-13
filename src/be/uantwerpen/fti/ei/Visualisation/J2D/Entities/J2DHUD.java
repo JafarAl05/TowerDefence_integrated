@@ -12,7 +12,7 @@ import java.awt.Graphics2D;
 public final class J2DHUD extends HUD implements Drawable {
     @Override
     public void draw(Graphics2D graphics2D) {
-        graphics2D.setColor(new Color(0, 0, 0, 165));
+        graphics2D.setColor(new Color(0, 0, 0, 50));
         graphics2D.fillRoundRect(10, 10, 650, 100, 14, 14);
 
         graphics2D.setColor(Color.WHITE);
@@ -32,6 +32,6 @@ public final class J2DHUD extends HUD implements Drawable {
 
         // Third line: controls
         graphics2D.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        graphics2D.drawString("Click green spots to build.  Arrows change tower.  H repairs base( 500 GOLD).", 25, 90);
+        graphics2D.drawString("Click green spots to build.  L/R Arrows change tower.  H repairs base( 500 GOLD).", 25, 90);
     }
 }

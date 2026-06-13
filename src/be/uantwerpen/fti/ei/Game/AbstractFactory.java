@@ -16,7 +16,7 @@ import java.util.List;
  * Abstract factory boundary between the game logic and a concrete visualization
  *
  * <p>The Game package only depends on this abstract type and on logic-level entity
- * types. It never imports Java2D, images, or keyboard event classes.
+ * types. It does not import Java2D, images, or keyboard event classes.
  * A visual package, such as Visualisation.J2D, provides a concrete factory that
  * returns drawable subclasses of these logic entities.</p>
  *
@@ -24,7 +24,7 @@ import java.util.List;
  * and cost are passed into the factory by the game logic. The visual factory does
  * not decide game rules; it only decides the concrete implementation family.</p>
  */
-public abstract class AbstractFactory {
+public abstract class AbstractFactory { //later to be extendend by the actual implemenation (J2DFactory)
     public abstract Enemy createEnemy(
             EnemyType type,
             Vector2 spawnPosition,
@@ -55,9 +55,13 @@ public abstract class AbstractFactory {
             int updatePriority
     );
 
-    public abstract Base createBase(Vector2 position, int maxHealth, int updatePriority);
+    public abstract Base createBase(
+            Vector2 position,
+            int maxHealth,
+            int updatePriority
+    );
 
-    public abstract HUD createHUD();
+    public abstract HUD createHUD(); //Heads up display-> ontly contains the HUD info (NOT the visualization (J2DHUD))
 
-    public abstract Input createInput();
+    public abstract Input createInput(); // to seperate game and key/mouse input
 }

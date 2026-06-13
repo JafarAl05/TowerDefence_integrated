@@ -26,17 +26,17 @@ public class Enemy extends GameEntity {
         super(spawnPosition, updatePriority);
         this.type = type;
         this.velocityComponent = new VelocityComponent();
-        this.path = Collections.unmodifiableList(new ArrayList<>(path));
+        this.path = Collections.unmodifiableList(new ArrayList<>(path)); // we copy the path (list of points) and make it into an unmodifiable list
         this.speed = speed;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.rewardGold = rewardGold;
         this.rewardScore = rewardScore;
         this.baseDamage = baseDamage;
-        this.targetWaypointIndex = Math.min(1, Math.max(0, path.size() - 1));
+        this.targetWaypointIndex = Math.min(1, Math.max(0, path.size() - 1));// enemies spawn at index 0 and so the next index should not be less than one
         this.reachedBase = false;
     }
-
+    // getters used by other files
     public EnemyType getType() {
         return type;
     }
@@ -87,9 +87,9 @@ public class Enemy extends GameEntity {
 
     public boolean hasReachedBase() {
         return reachedBase;
-    }
+    } // game.java will deduct health from base based on this condition
 
-    public void takeDamage(int damage) {
+    public void takeDamage(int damage) { // basically the same as Base
         health = Math.max(0, health - Math.max(0, damage));
         if (health == 0) {
             markDead();

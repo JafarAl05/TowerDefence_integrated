@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Creates waves and enemies. All wave/gameplay calculations happen here, not in J2DFactory.
+ * Creates waves and enemies.
  */
 public final class WaveManager {
     private final AbstractFactory factory;
@@ -22,15 +22,15 @@ public final class WaveManager {
     private final Consumer<Enemy> enemyConsumer;
     private final LuaWaveScript luaWaveScript;
     private int currentWave;
-    private int enemiesToSpawn;
-    private double spawnTimer;
-    private boolean waveActive;
-    private boolean allWavesStarted;
+    private int enemiesToSpawn; // how many enemies still need to be spawned in this wave
+    private double spawnTimer;//countdown until next enemyspawn
+    private boolean waveActive; // kind of like a flag: true if the wave is currently spawing enemies
+    private boolean allWavesStarted; // when the final wave has finished spawning/has started
 
     public WaveManager(AbstractFactory factory, GameConfig config, Level level, Consumer<Enemy> enemyConsumer) {
-        this.factory = factory;
+        this.factory = factory; // uses the abstractfactory to create enemies
         this.config = config;
-        this.level = level;
+        this.level = level; // to get the enemy path
         this.enemyConsumer = enemyConsumer;
         this.luaWaveScript = new LuaWaveScript(config.getLuaScriptPath());
         this.currentWave = 0;
@@ -42,15 +42,15 @@ public final class WaveManager {
 
     public void update(double deltaSeconds, boolean enemiesStillAlive) {
         if (allWavesStarted) {
-            return;
+            return; // no more enemies should spawn
         }
         if (!waveActive && !enemiesStillAlive) {
-            startNextWave();
+            startNextWave(); // no active waves and no living enemies then we start the next wave
         }
         if (waveActive) {
             spawnTimer -= deltaSeconds;
             if (spawnTimer <= 0.0 && enemiesToSpawn > 0) {
-                spawnEnemy();
+                spawnEnemy(); // when the spawntimer reaches zero and there are currently enemies to be spawned
                 enemiesToSpawn--;
                 spawnTimer = config.getSpawnIntervalSeconds();
             }
@@ -72,27 +72,27 @@ public final class WaveManager {
     }
 
     private void startNextWave() {
-        currentWave++;
+        currentWave++; // so the first wave  is wave 1
         if (currentWave > config.getMaxWaves()) {
             allWavesStarted = true;
             return;
         }
-        enemiesToSpawn = config.getBaseEnemyCount() + (currentWave - 1) * 2;
+        enemiesToSpawn = config.getBaseEnemyCount() + (currentWave - 1) * 2; // so later waves become bigger
         spawnTimer = 0.0;
         waveActive = true;
     }
 
-    private void spawnEnemy() {
+    private void spawnEnemy() { // creates one enemy everytime the spawntimer goes to zero
         EnemyType type = chooseEnemyType();
         EnemyStats stats = EnemyStats.forType(type);
         List<Vector2> path = level.getPath();
-        Vector2 spawn = path.get(0);
-        double speed = stats.getBaseSpeed() * luaWaveScript.speedMultiplier(currentWave);
+        Vector2 spawn = path.get(0); // the spawn position is the first point in the enemy path
+        double speed = stats.getBaseSpeed() * luaWaveScript.speedMultiplier(currentWave); //lua multipliers as the waves progress:
         int health = (int) Math.round(stats.getBaseHealth() * luaWaveScript.healthMultiplier(currentWave));
         int rewardGold = (int) Math.round(stats.getRewardGold() * luaWaveScript.rewardMultiplier(currentWave));
         int rewardScore = (int) Math.round(stats.getRewardScore() * luaWaveScript.rewardMultiplier(currentWave));
 
-        enemyConsumer.accept(factory.createEnemy(
+        enemyConsumer.accept(factory.createEnemy( //add enemy object (factory.createnemy) to the game  (.accept)
                 type,
                 spawn,
                 path,
@@ -107,11 +107,11 @@ public final class WaveManager {
 
     private EnemyType chooseEnemyType() {
         if (currentWave >= 4 && enemiesToSpawn % 4 == 0) {
-            return EnemyType.ARMORED;
+            return EnemyType.Spartaan; // from wave 4 we introduce spartanen (at a certain spawn count)
         }
         if (currentWave >= 2 && enemiesToSpawn % 3 == 0) {
-            return EnemyType.RUNNER;
+            return EnemyType.Viking; // from wave 2
         }
-        return EnemyType.GOBLIN;
+        return EnemyType.Ridder; //default enemy
     }
 }

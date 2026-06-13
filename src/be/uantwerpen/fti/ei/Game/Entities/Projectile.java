@@ -14,10 +14,6 @@ public class Projectile extends GameEntity {
         this.damage = damage;
     }
 
-    public Enemy getTarget() {
-        return target;
-    }
-
     public double getSpeed() {
         return speed;
     }
@@ -26,19 +22,19 @@ public class Projectile extends GameEntity {
         return damage;
     }
 
-    public void update(double deltaSeconds) {
+    public void update(double deltaSeconds) { // if the target (the enemy) is dead before the projectile reaches it, the projectile is marked dead (dissappearsà
         if (!target.isAlive()) {
             markDead();
             return;
         }
-        Vector2 direction = target.getPosition().subtract(getPosition());
-        double distance = getPosition().distanceTo(target.getPosition());
-        double step = speed * deltaSeconds;
-        if (distance <= step || distance <= 4.0) {
+        Vector2 direction = target.getPosition().subtract(getPosition()); // calculate the direction from projectile-> target
+        double distance = getPosition().distanceTo(target.getPosition());// the distance
+        double step = speed * deltaSeconds; // v=d/t so it calculates how far the projectile must move (in one frame)
+        if (distance <= step || distance <= 4.0) { // if the projectile can reach the enemy this frame or if the projectile is already  close to the target in this frame
             target.takeDamage(damage);
-            markDead();
+            markDead(); // disappear the projectile
         } else {
-            setPosition(getPosition().add(direction.normalized().multiply(step)));
+            setPosition(getPosition().add(direction.normalized().multiply(step))); // keep moving toward the target
         }
     }
 }

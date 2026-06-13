@@ -12,11 +12,6 @@ import java.util.regex.Pattern;
 
 /**
  * Loads the wave-balancing Lua file.
- *
- * <p>The class compiles without external dependencies. If LuaJ is available on
- * the classpath, it executes the Lua functions through reflection. If LuaJ is
- * not available, it still reads the numeric constants from the Lua file and
- * applies the same documented formulas as a safe fallback.</p>
  */
 public final class LuaWaveScript {
     private static final Pattern ASSIGNMENT = Pattern.compile("^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*([0-9]+(?:\\.[0-9]+)?)\\s*$");

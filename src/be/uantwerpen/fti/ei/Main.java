@@ -12,25 +12,25 @@ import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 
 /**
- * Application entry point. This class wires one visual implementation (Java2D)
- * to the pure game package through the AbstractFactory boundary.
+ * This class connects Java2D (the visiual implementation)
+ * to the game package through the AbstractFactory boundary.
  */
 public  class Main {
-    public static void main(String[] args) {
+    public static void main() {
         SwingUtilities.invokeLater(() -> {
-            GameConfig config = GameConfig.load("resources/config.properties");
-            AbstractFactory factory = new J2DFactory();
-            Game game = Game.getInstance(factory, config);
+            GameConfig config = GameConfig.load("resources/config.properties"); //we load the configurations with our GameConfig class.
+            AbstractFactory factory = new J2DFactory(); //Java2D as an abstract factory
+            Game game = Game.getInstance(factory, config); // singleton (one active game object)
 
             J2DPanel panel = new J2DPanel(game, config.getWindowWidth(), config.getWindowHeight());
-            Input input = game.getInput();
+            Input input = game.getInput(); // get game input to "connect " it to key/mouse inputs
             panel.addKeyListener((java.awt.event.KeyListener) input);
             panel.addMouseListener((java.awt.event.MouseListener) input);
-            panel.setPreferredSize(new Dimension(config.getWindowWidth(), config.getWindowHeight()));
+            panel.setPreferredSize(new Dimension(config.getWindowWidth(), config.getWindowHeight())); // panel dimensions are in config file
 
-            JFrame frame = new JFrame("Tower Defence");
+            JFrame frame = new JFrame("Tower Defence Jafar");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setResizable(false);
+            frame.setResizable(false);// our game map is based on fixed dimensions of the panel
             frame.add(panel);
             frame.pack();
             frame.setLocationRelativeTo(null);

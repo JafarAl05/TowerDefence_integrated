@@ -37,33 +37,26 @@ public class Tower extends GameEntity {
         return damage;
     }
 
-    public double getAttacksPerSecond() {
-        return attacksPerSecond;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
     public boolean canShoot() {
         return cooldownRemaining <= 0.0;
-    }
+    } // if the cooldown is less or equal to 0, the tower can shoot
 
     public void tickCooldown(double deltaSeconds) {
-        cooldownRemaining = Math.max(0.0, cooldownRemaining - deltaSeconds);
+        cooldownRemaining = Math.max(0.0, cooldownRemaining - deltaSeconds); // this decreases the cooldown over time and prevents negative cooldown
     }
 
     public void resetCooldown() {
         cooldownRemaining = 1.0 / attacksPerSecond;
-    }
+    } //this re(sets) the cooldown-> how much time between each shot by taking the inverse of the attacks per second
 
     /**
-     * Java Streams API usage: select the closest living enemy inside range.
+     * Java Streams API: select the closest living enemy inside range.
      */
     public Optional<Enemy> findTarget(Collection<Enemy> enemies) {
         return enemies.stream()
-                .filter(Enemy::isAlive)
-                .filter(enemy -> getPosition().distanceTo(enemy.getPosition()) <= range)
-                .min(Comparator.comparingDouble(enemy -> getPosition().distanceTo(enemy.getPosition())));
+                .filter(Enemy::isAlive) //to ignore dead enemies
+                .filter(enemy -> getPosition().distanceTo(enemy.getPosition()) <= range) //we only target enemies that are in the tower range
+                .min(Comparator.comparingDouble(enemy -> getPosition().distanceTo(enemy.getPosition()))); // we select the nearest enemies (.min)
+                //.min returns optional (smallest element in the stream or an empty optional if there are no enemies in the stream
     }
 }

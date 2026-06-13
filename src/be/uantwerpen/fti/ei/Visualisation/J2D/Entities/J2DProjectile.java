@@ -18,7 +18,7 @@ public final class J2DProjectile extends Projectile implements Drawable {
 
     @Override
     public void draw(Graphics2D graphics2D) {
-        int size = 48;
+        int size = 40;
         int x = (int) Math.round(getX()) - size / 2;
         int y = (int) Math.round(getY()) - size / 2;
         Optional<BufferedImage> image = AssetManager.get("bullet");

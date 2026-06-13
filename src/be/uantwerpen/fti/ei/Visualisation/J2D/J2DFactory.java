@@ -20,7 +20,7 @@ import be.uantwerpen.fti.ei.Visualisation.J2D.Input.J2DInput;
 import java.util.List;
 
 /**
- * Concrete AbstractFactory for the Java2D presentation family.
+ * Concrete AbstractFactory for the Java2D presentation.
  * It creates drawable subclasses but does not decide gameplay statistics.
  */
 public final class J2DFactory extends AbstractFactory {
@@ -55,3 +55,9 @@ public final class J2DFactory extends AbstractFactory {
         return new J2DInput();
     }
 }
+
+//short explanation/flow:
+//Main chooses J2DFactory.
+//Game stores it as AbstractFactory.
+//Game asks factory to create objects.
+//J2DFactory returns Java2D drawable versions.

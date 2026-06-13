@@ -11,9 +11,9 @@ public final class Stopwatch {
     }
 
     public double tickSeconds() {
-        long now = System.nanoTime();
-        double deltaSeconds = (now - previousTickNanos) / 1_000_000_000.0;
-        previousTickNanos = now;
-        return Math.min(deltaSeconds, 0.05); // avoid huge jumps after window pauses
+        long now = System.nanoTime(); // current time (highly accurate) in nanosecondds
+        double deltaSeconds = (now - previousTickNanos) / 1_000_000_000.0; // elapsed time from the time now back to the previous tick (and convert to seconds)
+        previousTickNanos = now; // repeat the cycle: "now" becomes the new previous tick
+        return Math.min(deltaSeconds, 0.05); // avoid huge jumps after window pauses (update uses at most 0.05 seconds)
     }
 }

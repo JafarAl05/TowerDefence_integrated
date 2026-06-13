@@ -46,7 +46,4 @@ public class HUD {
         return selectedTowerType;
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
 }

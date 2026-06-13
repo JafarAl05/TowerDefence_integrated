@@ -1,9 +1,9 @@
 package be.uantwerpen.fti.ei.Game.Rules;
 
 /**
- * Pure game-rule data for enemies.
- * The Java2D factory only creates drawable enemy objects; it does not decide
- * these gameplay values. That keeps the abstract factory clean.</p>
+ *  game-rule data for enemies.
+ * The Java2D factory creates drawable enemy objects; it does not decide
+ * these gameplay values.</p>
  */
 public final class EnemyStats {
     private final double baseSpeed;
@@ -22,13 +22,13 @@ public final class EnemyStats {
 
     public static EnemyStats forType(EnemyType type) {
         switch (type) {
-            case RUNNER:
+            case Viking:
                 // Small and fast: low health, low base damage.
                 return new EnemyStats(85.0, 45, 10, 90, 1);
-            case ARMORED:
+            case Spartaan:
                 // Big and slow: high health, high base damage.
                 return new EnemyStats(32.0, 230, 35, 240, 4);
-            case GOBLIN:
+            case Ridder:
             default:
                 // Normal enemy: average speed, health and damage.
                 return new EnemyStats(55.0, 100, 18, 130, 2);

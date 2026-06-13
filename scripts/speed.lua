@@ -1,5 +1,3 @@
--- Lua wave-balancing script for the tower-defence project.
--- Java executes these functions through LuaJ when luaj-jse is on the classpath.
 
 speedScalePerWave = 0.15
 healthScalePerWave = 0.20

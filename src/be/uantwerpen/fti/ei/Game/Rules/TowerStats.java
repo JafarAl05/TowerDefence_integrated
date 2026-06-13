@@ -1,6 +1,6 @@
 package be.uantwerpen.fti.ei.Game.Rules;
 
-/** Pure game-rule data for towers. */
+/** game-rule data for towers. */
 public final class TowerStats {
     private final double range;
     private final int damage;
@@ -20,9 +20,9 @@ public final class TowerStats {
         switch (type) {
             case SNIPER:
                 return new TowerStats(230.0, 70, 0.65, 200, 420.0);
-            case RAPID:
+            case SMG:
                 return new TowerStats(125.0, 10, 3.5, 100, 360.0);
-            case BASIC:
+            case Shotgun:
             default:
                 return new TowerStats(160.0, 32, 1.25, 75, 320.0);
         }

@@ -13,10 +13,10 @@ import java.util.Optional;
  * Java2D/Swing input implementation. The Game package only sees the Input interface.
  */
 public final class J2DInput implements Input, KeyListener, MouseListener {
-    private boolean nextTowerRequested;
+    private boolean nextTowerRequested;// temporary request flags: true/false
     private boolean previousTowerRequested;
     private boolean repairRequested;
-    private Optional<Vector2> buildRequest;
+    private Optional<Vector2> buildRequest; // build request is a container object: stores latest clicked position
 
     public J2DInput() {
         this.nextTowerRequested = false;
@@ -24,7 +24,7 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
         this.repairRequested = false;
         this.buildRequest = Optional.empty();
     }
-
+    //we use the result boolean to store the values of the requests before we reset them (back to false)
     @Override
     public boolean consumeNextTowerRequest() {
         boolean result = nextTowerRequested;
@@ -46,6 +46,7 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
         return result;
     }
 
+    //here, we  use the result vector to store the values of the requests before we reset them (back to empty)
     @Override
     public Optional<Vector2> consumeBuildRequest() {
         Optional<Vector2> result = buildRequest;
@@ -53,9 +54,7 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
         return result;
     }
 
-    @Override
-    public void keyTyped(KeyEvent event) {
-    }
+
 
     @Override
     public void keyPressed(KeyEvent event) {
@@ -67,15 +66,20 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
             repairRequested = true;
         }
     }
-
+    //we dont really use following key events but we have to implement them as keylistener requires the three methods
+    @Override
+    public void keyTyped(KeyEvent event) {
+    }
     @Override
     public void keyReleased(KeyEvent event) {
     }
-
+    //we get the click coordinates inside the panel and in game.java we then try to build here
     @Override
     public void mouseClicked(MouseEvent event) {
+
         buildRequest = Optional.of(new Vector2(event.getX(), event.getY()));
     }
+
 
     @Override
     public void mousePressed(MouseEvent event) {
@@ -93,3 +97,4 @@ public final class J2DInput implements Input, KeyListener, MouseListener {
     public void mouseExited(MouseEvent event) {
     }
 }
+

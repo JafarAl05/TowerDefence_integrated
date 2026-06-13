@@ -52,25 +52,25 @@ public final class J2DEnemy extends Enemy implements Drawable {
         graphics2D.drawRect(x, y, width, height);
     }
 
-    private String assetKeyForType() {
+    private String assetKeyForType() { // as already mentiod in assetmanager: with these keys, the images are the values in our Hashmap so each key returns a corresponding image
         switch (getType()) {
-            case RUNNER:
-                return "enemy.runner";
-            case ARMORED:
-                return "enemy.armored";
-            case GOBLIN:
+            case Viking:
+                return "enemy.viking";
+            case Spartaan:
+                return "enemy.spartaan";
+            case Ridder:
             default:
-                return "enemy.normal";
+                return "enemy.ridder";
         }
     }
 
     private int sizeForType() {
         switch (getType()) {
-            case RUNNER:
+            case Viking:
                 return 30;
-            case ARMORED:
+            case Spartaan:
                 return 46;
-            case GOBLIN:
+            case Ridder:
             default:
                 return 36;
         }
@@ -78,11 +78,11 @@ public final class J2DEnemy extends Enemy implements Drawable {
 
     private Color colorForType() {
         switch (getType()) {
-            case RUNNER:
+            case Viking:
                 return new Color(230, 215, 70);
-            case ARMORED:
+            case Spartaan:
                 return new Color(120, 120, 120);
-            case GOBLIN:
+            case Ridder:
             default:
                 return new Color(190, 65, 65);
         }

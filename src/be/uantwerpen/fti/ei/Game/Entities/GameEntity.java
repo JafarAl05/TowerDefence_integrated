@@ -9,26 +9,18 @@ import java.util.concurrent.atomic.AtomicLong;
  * Shared logic base class for all game entities. This class contains no visual code.
  */
 public abstract class GameEntity implements Comparable<GameEntity> {
-    private static final AtomicLong NEXT_ID = new AtomicLong(1);
+    private static final AtomicLong NEXT_ID = new AtomicLong(1); // to give each 'sub'entity an ID (useful for priorities)
 
     private final long id;
     private final PositionComponent positionComponent;
-    private final int updatePriority;
+    private final int updatePriority; // priority of the entities (used to decide wich entitites must be drawn/ processed first/later)
     private boolean alive;
 
-    protected GameEntity(Vector2 position, int updatePriority) {
-        this.id = NEXT_ID.getAndIncrement();
+    protected GameEntity(Vector2 position, int updatePriority) { // protected constructor -> only this class and child classes can call it (super(..,..)
+        this.id = NEXT_ID.getAndIncrement(); // so a next entity gets this ID +1
         this.positionComponent = new PositionComponent(position);
         this.updatePriority = updatePriority;
         this.alive = true;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public PositionComponent getPositionComponent() {
-        return positionComponent;
     }
 
     public Vector2 getPosition() {
@@ -60,7 +52,7 @@ public abstract class GameEntity implements Comparable<GameEntity> {
     }
 
     @Override
-    public int compareTo(GameEntity other) {
+    public int compareTo(GameEntity other) { // if priorities are the same, we compare by ID
         int priorityCompare = Integer.compare(updatePriority, other.updatePriority);
         if (priorityCompare != 0) {
             return priorityCompare;

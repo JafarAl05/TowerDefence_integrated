@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * and through the logic-facing Input interface.</p>
  */
 public final class Game {
-    private static Optional<Game> instance = Optional.empty();
+    private static Optional<Game> instance = Optional.empty(); // instead of using Game instance = null;
 
     private final AbstractFactory factory;
     private final GameConfig config;
@@ -42,12 +42,14 @@ public final class Game {
     private final Level level;
     private final TileManager tileManager;
     private final Input input;
+
     private final Base base;
     private final HUD hud;
     private final List<Enemy> enemies;
     private final List<Tower> towers;
     private final List<Projectile> projectiles;
     private final List<TowerType> towerSelectionOrder;
+
     private GameState state;
     private int selectedTowerIndex;
     private int gold;
@@ -58,7 +60,7 @@ public final class Game {
         this.config = config;
         this.stopwatch = new Stopwatch();
         this.movementSystem = new MovementSystem();
-        this.level = LevelRepository.getLevel(config.getSelectedLevel(), config.getTileSize());
+        this.level = LevelRepository.getLevel(config.getSelectedLevel(), config.getTileSize()); //select lvl1/2 from config
         this.tileManager = new TileManager(level);
         this.input = factory.createInput();
         this.base = factory.createBase(level.getBasePosition(), config.getStartingLives(), 10);
@@ -66,7 +68,7 @@ public final class Game {
         this.enemies = new ArrayList<>();
         this.towers = new ArrayList<>();
         this.projectiles = new ArrayList<>();
-        this.towerSelectionOrder = Collections.unmodifiableList(Arrays.asList(TowerType.BASIC, TowerType.SNIPER, TowerType.RAPID));
+        this.towerSelectionOrder = Collections.unmodifiableList(Arrays.asList(TowerType.Shotgun, TowerType.SNIPER, TowerType.SMG));
         this.selectedTowerIndex = 0;
         this.gold = config.getStartingGold();
         this.score = 0;
@@ -77,34 +79,35 @@ public final class Game {
 
     public static synchronized Game getInstance(AbstractFactory factory, GameConfig config) {
         if (!instance.isPresent()) {
-            instance = Optional.of(new Game(factory, config));
+            instance = Optional.of(new Game(factory, config)); //if there are is no game object, create one
         }
-        return instance.get();
+        return instance.get(); // otherwise, return the current game object.
     }
 
-    /** Useful when restarting from Main/test code without relying on nulls. */
+    //Useful when restarting from Main/test code without relying on nulls.
     public static synchronized void resetInstance() {
         instance = Optional.empty();
     }
 
+   // main game loop:
     public void update() {
-        double deltaSeconds = stopwatch.tickSeconds();
+        double deltaSeconds = stopwatch.tickSeconds(); // fetch the delta time
         if (state != GameState.RUNNING) {
             updateHud();
-            return;
+            return; //stop the logic if game is not in the running state
         }
 
         processInput();
-        waveManager.update(deltaSeconds, hasLivingEnemies());
+        waveManager.update(deltaSeconds, hasLivingEnemies()); //update the waves and enemies
         movementSystem.update(enemies, deltaSeconds);
-        damageBaseForReachedEnemies();
+        damageBaseForReachedEnemies(); //update the entities
         updateTowers(deltaSeconds);
         updateProjectiles(deltaSeconds);
-        collectRewardsAndCleanup();
-        updateGameState();
+        collectRewardsAndCleanup(); //remove dead objects
+        updateGameState(); //check the game state
         updateHud();
     }
-
+    //public getters to be used to give information to the visual side of the code (J2D)
     public Input getInput() {
         return input;
     }
@@ -125,18 +128,6 @@ public final class Game {
         return hud;
     }
 
-    public List<Enemy> getEnemies() {
-        return Collections.unmodifiableList(enemies);
-    }
-
-    public List<Tower> getTowers() {
-        return Collections.unmodifiableList(towers);
-    }
-
-    public List<Projectile> getProjectiles() {
-        return Collections.unmodifiableList(projectiles);
-    }
-
     public GameState getState() {
         return state;
     }
@@ -145,49 +136,48 @@ public final class Game {
         return towerSelectionOrder.get(selectedTowerIndex);
     }
 
-    public int getGold() {
-        return gold;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public List<GameEntity> getEntitiesInRenderOrder() {
+    public List<GameEntity> getEntitiesInRenderOrder() { // we use this to sort the drawable objects by priority
         List<GameEntity> renderables = new ArrayList<>();
         renderables.add(base);
         renderables.addAll(towers);
         renderables.addAll(enemies);
         renderables.addAll(projectiles);
-        return renderables.stream()
+        return renderables.stream() //API STREAM
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
     }
 
+
+    //private methods used in the game loop.
+
+    // if the player wants to ..., the do ....
     private void processInput() {
-        if (input.consumeNextTowerRequest()) {
+        if (input.consumeNextTowerRequest()) { //switch to next option of tower (right arrow)
             selectedTowerIndex = (selectedTowerIndex + 1) % towerSelectionOrder.size();
         }
-        if (input.consumePreviousTowerRequest()) {
+        if (input.consumePreviousTowerRequest()) { //switch to next option of tower (left arrow)
             selectedTowerIndex = (selectedTowerIndex - 1 + towerSelectionOrder.size()) % towerSelectionOrder.size();
         }
-        if (input.consumeRepairRequest()) {
+        if (input.consumeRepairRequest()) { //repair the base (H key)
             repairBase();
         }
-        input.consumeBuildRequest().ifPresent(this::tryBuildTower);
+        input.consumeBuildRequest().ifPresent(this::tryBuildTower); //build a tower(mouseclick)
     }
+    //But the actual keys/mousclicks are not registrerd here -> visual side.
+    // for example: the game reads consumeNextTowerRequest / consumeBuildRequest and preforms the necessary logic.
+    //It does not read keyevent/mouseevent !
 
     private void tryBuildTower(Vector2 requestedPosition) {
-        if (!tileManager.isBuildableWorldPosition(requestedPosition)) {
+        if (!tileManager.isBuildableWorldPosition(requestedPosition)) { // check if clicked tile is buildable
             return;
         }
-        TowerType towerType = getSelectedTowerType();
-        TowerStats stats = TowerStats.forType(towerType);
-        if (gold < stats.getCost()) {
+        TowerType towerType = getSelectedTowerType(); //choose tower type based on the pressed keys
+        TowerStats stats = TowerStats.forType(towerType); // match the tower type to its stats
+        if (gold < stats.getCost()) { // stats of the tower type tell us the tower is too expensive
             return;
         }
-        Vector2 towerPosition = tileManager.centerOfWorldTile(requestedPosition);
-        Tower tower = factory.createTower(
+        Vector2 towerPosition = tileManager.centerOfWorldTile(requestedPosition);// center the tower on the center of the selected tile
+        Tower tower = factory.createTower( //create the tower with the factory and fill the fields with the tower stats.
                 towerType,
                 towerPosition,
                 stats.getRange(),
@@ -196,29 +186,29 @@ public final class Game {
                 stats.getCost(),
                 30
         );
-        towers.add(tower);
-        tileManager.markOccupied(requestedPosition);
-        gold -= stats.getCost();
+        towers.add(tower); // add this tower to the tower list
+        tileManager.markOccupied(requestedPosition); // we set the clicked tile as occupies
+        gold -= stats.getCost(); // subtract the players gold with the tower cost.
     }
 
     private void repairBase() {
         int repairCost = 500;
-        if (gold >= repairCost && base.getHealth() < base.getMaxHealth()) {
+        if (gold >= repairCost && base.getHealth() < base.getMaxHealth()) { //if player has enough gold and base health is not full
             gold -= repairCost;
             base.repair(10);
         }
     }
 
-    private void damageBaseForReachedEnemies() {
+    private void damageBaseForReachedEnemies() { //if an enemy reaches the base, then the base loses health
         for (Enemy enemy : enemies) {
             if (enemy.isAlive() && enemy.hasReachedBase()) {
-                base.takeDamage(enemy.getBaseDamage());
-                enemy.markDead();
+                base.takeDamage(enemy.getBaseDamage());  // base takes damage accroding to the enemy type (getter to get the exact damage)
+                enemy.markDead(); // enemy dies once it reaches the base (kind of like kamikaze lol)
             }
         }
     }
 
-    private void updateTowers(double deltaSeconds) {
+    private void updateTowers(double deltaSeconds) { // how towers attack the enemies:
         for (Tower tower : towers) {
             tower.tickCooldown(deltaSeconds);
             if (!tower.canShoot()) {
@@ -230,10 +220,15 @@ public final class Game {
                 projectiles.add(factory.createProjectile(tower.getPosition(), target.get(), stats.getProjectileSpeed(), tower.getDamage(), 40));
                 tower.resetCooldown();
             }
+            // basically:
+            // tower cooldown decreases
+            //→ if ready, find enemy in range (API stream)
+            //→ if enemy found, create projectile
+            //→ reset cooldown
         }
     }
 
-    private void updateProjectiles(double deltaSeconds) {
+    private void updateProjectiles(double deltaSeconds) { // the projectiles that are alive update themselves
         for (Projectile projectile : projectiles) {
             if (projectile.isAlive()) {
                 projectile.update(deltaSeconds);
@@ -242,15 +237,15 @@ public final class Game {
     }
 
     private void collectRewardsAndCleanup() {
-        List<Enemy> defeatedEnemies = enemies.stream()
+        List<Enemy> defeatedEnemies = enemies.stream() // a list of enemies that are dead and did not reach the base (so killed by a tower)
                 .filter(enemy -> !enemy.isAlive() && !enemy.hasReachedBase())
                 .collect(Collectors.toList());
 
-        for (Enemy enemy : defeatedEnemies) {
+        for (Enemy enemy : defeatedEnemies) { //gain gold/score for an enemy killed (varies on wich kind of enemy you killed)
             gold += enemy.getRewardGold();
             score += enemy.getRewardScore();
         }
-
+        // cleanup
         enemies.removeIf(enemy -> !enemy.isAlive());
         projectiles.removeIf(projectile -> !projectile.isAlive());
     }
@@ -267,9 +262,9 @@ public final class Game {
 
     private boolean hasLivingEnemies() {
         return enemies.stream().anyMatch(Enemy::isAlive);
-    }
+    } // check if there are living enemies
 
-    private void updateHud() {
+    private void updateHud() { //to update the HUD with the information gained from above methods
         hud.update(score, gold, base.getHealth(), waveManager.getCurrentWave(), config.getMaxWaves(), getSelectedTowerType(), state);
     }
 }

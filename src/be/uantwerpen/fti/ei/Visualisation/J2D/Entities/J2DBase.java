@@ -17,8 +17,8 @@ public final class J2DBase extends Base implements Drawable {
 
     @Override
     public void draw(Graphics2D graphics2D) {
-        int width = 58;
-        int height = 58;
+        int width = 50; // Because Java2D starts drawing from the top left and our original coordinates (vector2) point to the center of the object, we have to adjust:
+        int height = 50;
         int x = (int) Math.round(getX()) - width / 2;
         int y = (int) Math.round(getY()) - height / 2;
 
@@ -33,17 +33,13 @@ public final class J2DBase extends Base implements Drawable {
     }
 
     private void drawFallbackBase(Graphics2D graphics2D, int x, int y, int width, int height) {
-        graphics2D.setColor(new Color(210, 210, 240));
-        graphics2D.fillRect(x, y + 16, width, height - 16);
-        graphics2D.setColor(new Color(150, 150, 190));
-        graphics2D.fillPolygon(new int[]{x - 6, x + width / 2, x + width + 6}, new int[]{y + 18, y - 8, y + 18}, 3);
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.drawRect(x, y + 16, width, height - 16);
+        graphics2D.setColor(new Color(210, 210, 210));
+        graphics2D.fillRect(x, y , width, height );
     }
 
     private void drawHealthBar(Graphics2D graphics2D, int x, int y, int width, int height) {
-        double ratio = getHealth() / (double) getMaxHealth();
-        int fillWidth = (int) Math.round(width * Math.max(0.0, Math.min(1.0, ratio)));
+        double ratio = getHealth() / (double) getMaxHealth(); // calculate how full the healthbar is
+        int fillWidth = (int) Math.round(width * Math.max(0.0, Math.min(1.0, ratio))); //ratio can't be negative and must be between 0 and 1
         graphics2D.setColor(Color.DARK_GRAY);
         graphics2D.fillRect(x, y, width, height);
         graphics2D.setColor(new Color(70, 190, 70));

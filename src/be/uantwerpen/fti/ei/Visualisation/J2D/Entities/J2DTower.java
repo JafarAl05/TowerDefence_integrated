@@ -22,8 +22,8 @@ public final class J2DTower extends Tower implements Drawable {
         int x = (int) Math.round(getX()) - size / 2;
         int y = (int) Math.round(getY()) - size / 2;
 
-        graphics2D.setColor(new Color(0, 0, 0, 28));
-        int rangeDiameter = (int) Math.round(getRange() * 2.0);
+        graphics2D.setColor(new Color(0, 0, 0, 28)); // draws a transparant circle (range around the rower)= tower range
+        int rangeDiameter = (int) Math.round(getRange() * 2.0); // range is the radius and so the diameter=range*2
         graphics2D.fillOval((int) Math.round(getX() - getRange()), (int) Math.round(getY() - getRange()), rangeDiameter, rangeDiameter);
 
         Optional<BufferedImage> image = AssetManager.get(assetKeyForType());
@@ -45,11 +45,11 @@ public final class J2DTower extends Tower implements Drawable {
         switch (getType()) {
             case SNIPER:
                 return "tower.sniper";
-            case RAPID:
-                return "tower.rapid";
-            case BASIC:
+            case SMG:
+                return "tower.SMG";
+            case Shotgun:
             default:
-                return "tower.basic";
+                return "tower.shotgun";
         }
     }
 
@@ -57,9 +57,9 @@ public final class J2DTower extends Tower implements Drawable {
         switch (getType()) {
             case SNIPER:
                 return new Color(70, 100, 190);
-            case RAPID:
+            case SMG:
                 return new Color(225, 150, 45);
-            case BASIC:
+            case Shotgun:
             default:
                 return new Color(80, 80, 155);
         }
